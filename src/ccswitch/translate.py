@@ -105,6 +105,13 @@ def translate_tools(tools: list[dict] | None) -> list[dict] | None:
     return result
 
 
+SIMPLE_SYSTEM_PROMPT = (
+    "You are a helpful coding assistant. Be concise and direct. "
+    "When asked to write code, write it. When asked questions, answer them. "
+    "Do not pretend to run commands or edit files - just provide the content."
+)
+
+
 def translate_request(body: dict, config: Any) -> dict:
     """Convert a full Responses API request to Chat Completions format."""
     messages = []
@@ -112,7 +119,10 @@ def translate_request(body: dict, config: Any) -> dict:
     # Instructions → system message
     instructions = body.get("instructions")
     if instructions:
-        messages.append({"role": "system", "content": instructions})
+        if config.simplify_instructions:
+            messages.append({"role": "system", "content": SIMPLE_SYSTEM_PROMPT})
+        else:
+            messages.append({"role": "system", "content": instructions})
 
     # Input → messages
     raw_input = body.get("input", [])

@@ -11,6 +11,7 @@ class Config:
     proxy_host: str
     proxy_port: int
     default_model: str
+    simplify_instructions: bool = False
 
 
 def load_config() -> Config:
@@ -24,4 +25,5 @@ def load_config() -> Config:
         proxy_host=os.getenv("PROXY_HOST", "127.0.0.1"),
         proxy_port=int(os.getenv("PROXY_PORT", "11435")),
         default_model=os.getenv("DEFAULT_MODEL", "gpt-4o-mini"),
+        simplify_instructions=os.getenv("SIMPLIFY_INSTRUCTIONS", "").lower() in ("1", "true", "yes"),
     )

@@ -40,7 +40,6 @@ async def handle_responses(request: web.Request) -> web.StreamResponse:
         base = base[:-3]
     backend_url = f"{base}/v1/chat/completions"
     logger.info("Proxying to %s (model=%s)", backend_url, chat_body.get("model"))
-    logger.info("Request body: %s", json.dumps(chat_body, ensure_ascii=False)[:500])
 
     headers = {
         "Authorization": f"Bearer {config.api_key}",
