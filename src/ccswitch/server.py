@@ -35,7 +35,12 @@ async def handle_responses(request: web.Request) -> web.StreamResponse:
         return web.Response(status=400, text="Invalid JSON")
 
     chat_body = translate_request(body, config)
-    backend_url = f"{config.api_base_url.rstrip('/')}/v1/chat/completions"
+    base = config.api_base_url.rstrip("/")
+    if base.endswith("/v1"):
+        base = base[:-3]
+    backend_url = f"{base}/v1/chat/completions"
+    logger.info("Proxying to %s (model=%s)", backend_url, chat_body.get("model"))
+    logger.info("Request body: %s", json.dumps(chat_body, ensure_ascii=False)[:500])
 
     headers = {
         "Authorization": f"Bearer {config.api_key}",
@@ -72,6 +77,7 @@ async def handle_responses(request: web.Request) -> web.StreamResponse:
                         msg = error_data.get("error", {}).get("message", error_body.decode())
                     except (json.JSONDecodeError, UnicodeDecodeError):
                         msg = str(error_body)
+                    logger.error("Backend error %d: %s", resp.status_code, msg)
                     await response.write(_error_sse("backend_error", f"Backend {resp.status_code}: {msg}").encode())
                     await response.write_eof()
                     return response

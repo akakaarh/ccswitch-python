@@ -103,3 +103,29 @@ async def test_empty_stream():
     assert "response.completed" in event_types
     completed = [e for e in parsed if e[0] == "response.completed"][0]
     assert completed[1]["response"]["output"] == []
+
+
+@pytest.mark.asyncio
+async def test_usage_translation():
+    translator = SseTranslator(response_id="resp_4", model="gpt-4o")
+
+    lines = [
+        'data: {"choices":[{"delta":{"content":"hi"}}]}',
+        'data: {"choices":[{"delta":{},"finish_reason":"stop"}],"usage":{"prompt_tokens":10,"completion_tokens":2,"total_tokens":12}}',
+        "data: [DONE]",
+    ]
+
+    all_events = []
+    for line in lines:
+        events = await translator.feed(line)
+        all_events.extend(events)
+    done_events = await translator.done()
+    all_events.extend(done_events)
+
+    raw = "".join(all_events)
+    parsed = parse_sse_events(raw)
+    completed = [e for e in parsed if e[0] == "response.completed"][0]
+    usage = completed[1]["response"]["usage"]
+    assert usage["input_tokens"] == 10
+    assert usage["output_tokens"] == 2
+    assert usage["total_tokens"] == 12

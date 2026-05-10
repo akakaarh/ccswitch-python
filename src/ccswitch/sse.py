@@ -40,6 +40,15 @@ class SseTranslator:
             _sse("response.in_progress", {"type": "response.in_progress", "response": resp}),
         ]
 
+    def _translate_usage(self) -> dict:
+        if not self._usage:
+            return {}
+        return {
+            "input_tokens": self._usage.get("prompt_tokens", 0),
+            "output_tokens": self._usage.get("completion_tokens", 0),
+            "total_tokens": self._usage.get("total_tokens", 0),
+        }
+
     def _make_response(self, status: str) -> dict:
         return {
             "id": self.response_id,
@@ -47,7 +56,7 @@ class SseTranslator:
             "status": status,
             "model": self.model,
             "output": list(self._output_items),
-            "usage": self._usage or {},
+            "usage": self._translate_usage(),
         }
 
     async def feed(self, line: str) -> list[str]:
@@ -82,7 +91,7 @@ class SseTranslator:
         if "content" in delta and delta["content"]:
             events.extend(self._handle_text_delta(delta["content"]))
 
-        if "tool_calls" in delta:
+        if "tool_calls" in delta and delta["tool_calls"] is not None:
             events.extend(self._handle_tool_calls_delta(delta["tool_calls"]))
 
         if finish_reason:
