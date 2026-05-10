@@ -1,5 +1,7 @@
 # ccswitch-python
 
+English | [中文](README.zh-CN.md)
+
 A local proxy that translates OpenAI's Responses API to Chat Completions API, enabling Codex CLI to work with any OpenAI-compatible backend.
 
 ## How It Works
@@ -45,6 +47,7 @@ Then run: `codex --profile ccswitch`
 | `PROXY_HOST` | `127.0.0.1` | Listen address |
 | `PROXY_PORT` | `11435` | Listen port |
 | `DEFAULT_MODEL` | `gpt-4o-mini` | Default model |
+| `SIMPLIFY_INSTRUCTIONS` | `false` | Simplify system prompt (reduces hallucinations for weaker models) |
 
 ## Supported Backends
 
