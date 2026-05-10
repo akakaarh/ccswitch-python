@@ -122,7 +122,7 @@ def translate_request(body: dict, config: Any) -> dict:
 
     # Build Chat Completions request
     result = {
-        "model": body.get("model", config.default_model),
+        "model": config.default_model,
         "messages": messages,
         "stream": True,
     }

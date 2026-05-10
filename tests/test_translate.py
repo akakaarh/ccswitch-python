@@ -158,7 +158,7 @@ def test_translate_request_basic():
         "stream": True,
     }
     result = translate_request(body, make_config())
-    assert result["model"] == "gpt-4o"
+    assert result["model"] == "gpt-4o-mini"  # always uses config.default_model
     assert result["stream"] is True
     assert result["messages"][0]["role"] == "user"
     assert result["messages"][0]["content"] == [{"type": "text", "text": "hello"}]
