@@ -1,34 +1,34 @@
 # ccswitch-python
 
-English | [中文](README.zh-CN.md)
+[English](README.en.md) | 中文
 
-A local proxy that translates OpenAI's Responses API to Chat Completions API, enabling Codex CLI to work with any OpenAI-compatible backend.
+一个本地代理，将 OpenAI 的 Responses API 转换为 Chat Completions API，使 Codex CLI 能够对接任意 OpenAI 兼容后端。
 
-## How It Works
+## 工作原理
 
 ```
-Codex ──Responses API──> localhost:11435 ──Chat Completions──> Any backend
+Codex ──Responses API──> localhost:11435 ──Chat Completions──> 任意后端
 ```
 
-## Quick Start
+## 快速开始
 
 ```bash
-# Clone and install
-git clone https://github.com/YOUR_USERNAME/ccswitch-python.git
+# 克隆并安装
+git clone https://github.com/akakaarh/ccswitch-python.git
 cd ccswitch-python
 pip install -e ".[dev]"
 
-# Configure
+# 配置
 cp .env.example .env
-# Edit .env with your API_KEY and API_BASE_URL
+# 编辑 .env，填入你的 API_KEY 和 API_BASE_URL
 
-# Run
+# 启动
 python -m ccswitch
 ```
 
-## Codex CLI Setup
+## Codex CLI 配置
 
-Add to `~/.codex/config.toml`:
+在 `~/.codex/config.toml` 中添加：
 
 ```toml
 [model_providers.ccswitch]
@@ -36,35 +36,35 @@ base_url = "http://127.0.0.1:11435/v1"
 wire_api = "responses"
 ```
 
-Then run: `codex --profile ccswitch`
+然后运行：`codex --profile ccswitch`
 
-## Configuration
+## 环境变量
 
-| Variable | Default | Description |
+| 变量 | 默认值 | 说明 |
 |---|---|---|
-| `API_KEY` | (required) | Backend API key |
-| `API_BASE_URL` | `https://api.openai.com` | Backend base URL |
-| `PROXY_HOST` | `127.0.0.1` | Listen address |
-| `PROXY_PORT` | `11435` | Listen port |
-| `DEFAULT_MODEL` | `gpt-4o-mini` | Default model |
-| `SIMPLIFY_INSTRUCTIONS` | `false` | Simplify system prompt (reduces hallucinations for weaker models) |
+| `API_KEY` | （必填） | 后端 API Key |
+| `API_BASE_URL` | `https://api.openai.com` | 后端地址 |
+| `PROXY_HOST` | `127.0.0.1` | 监听地址 |
+| `PROXY_PORT` | `11435` | 监听端口 |
+| `DEFAULT_MODEL` | `gpt-4o-mini` | 默认模型 |
+| `SIMPLIFY_INSTRUCTIONS` | `false` | 简化系统提示词（减少弱模型幻觉） |
 
-## Supported Backends
+## 支持的后端
 
-Any OpenAI-compatible Chat Completions API:
+任何 OpenAI 兼容的 Chat Completions API：
 - OpenAI
 - DeepSeek
-- mimo (via compatible endpoint)
-- Ollama (with OpenAI compatibility mode)
-- vLLM, LiteLLM, etc.
+- mimo（小米大模型）
+- Ollama（需开启 OpenAI 兼容模式）
+- vLLM、LiteLLM 等
 
-## Testing
+## 运行测试
 
 ```bash
 pip install -e ".[dev]"
 pytest -v
 ```
 
-## License
+## 许可证
 
 MIT
